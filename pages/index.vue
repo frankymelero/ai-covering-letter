@@ -4,25 +4,37 @@
   <p>
     Generate a covering letter from your resume and the desired job offer.
   </p>
-  <input type="button" value="Start Now" class="start">
+  <a href="#getting-started"><input type="button" value="Start Now" class="start"></a>
   <svg viewBox="0 0 1440 319">
     <path fill="#00F5D4" fill-opacity="1" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
   </svg>
 </div>
-<div class="curved-div second">
-  <h1>Covering letter generator</h1>
-  <p>
-    Generate a covering letter from your resume and the desired job offer.
-  </p>
+<div class="curved-div second" id="getting-started">
+  <h2>Get Started</h2>
+ <div class="flexbox">
+  <div class="left-box">
+    <h3>Step 1: Select your CV</h3>
+    <input type="file">
+  </div> 
+  <div class="right-box">
+    <h3>Step 2: Paste the offer</h3>
+    <textarea cols="45" rows="25"></textarea>
+  </div> 
+  <div class="center-box">
+    <h3>Step 3: Select your language and submit!</h3>
+    <select name="language"><option value="english">English</option><option value="español">Español</option><option value="french">François</option><option value="italian">Italiano</option><option value="portuguese">Portuguese</option></select>
+   <br><br> <input type="submit" value="Generate">
+</div>
+  </div>
 
   <svg viewBox="0 0 1440 319">
     <path fill="#FEE440" fill-opacity="1" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
   </svg>
 </div>
 <div class="curved-div third">
-  <h1>Covering letter generator</h1>
+  <h1>Results</h1>
   <p>
-    Generate a covering letter from your resume and the desired job offer.
+
   </p>
   <svg viewBox="0 0 1440 319">
     <path fill="#00BBF9" fill-opacity="1" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -65,6 +77,17 @@ padding-top: 15vh;
   font-size: 6rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+.curved-div h2 {
+  font-size: 4rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: -5vh;
+}
+
+.curved-div h3{
+  font-size: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: normal;
+}
 .curved-div p {
   font-size: 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -100,5 +123,31 @@ margin-top: 10vh !important;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: #00BBF9;
     margin-top: -10vh;
+}
+.flexbox{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.left-box{
+    width: 50%;
+    height: 30vh;
+}
+.right-box{
+    width: 50%;
+    height: 30vh;
+    overflow: hidden;
+}
+.center-box{
+    width: 100%;
+    height: 15vh;
+    margin-top: 1vh;
+
+}
+textarea{
+    max-height: 15vh;
+    resize: none;
 }
 </style>
