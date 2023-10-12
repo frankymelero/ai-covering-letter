@@ -14,7 +14,7 @@
   <h2>Get Started</h2>
  <div class="flexbox">
   <div class="left-box">
-    <h3>Step 1: Select your CV</h3>
+    <h3>Step 1: Select your CV in .pdf format</h3>
     <input type="file" @change="handleFileUpload" accept=".pdf" />
   </div> 
   <div class="right-box">
@@ -48,18 +48,20 @@
     <p>2023 by Franky Melero</p>
 </section>
   </template>
+<script setup>
+import * as pdfjs from 'pdfjs-dist/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min';
 
-  <script setup>
-const config = useRuntimeConfig();
-import pdfjs from 'pdfjs-dist/build/pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
+const isValid = ref(false);
 const form = ref({
   offer: '',
   language: 'english',
   wordlimit: 100,
+  pdfContent: null,
+  fullText: '', // Agregamos una propiedad para almacenar el texto del PDF
 });
-
-const pdfContent = ref(null);
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
@@ -67,33 +69,49 @@ const handleFileUpload = async (event) => {
     const fileReader = new FileReader();
 
     fileReader.onload = async () => {
-  const buffer = new Uint8Array(fileReader.result);
+      const buffer = new Uint8Array(fileReader.result);
+      try {
+        const pdfDocument = await pdfjs.getDocument({ data: buffer }).promise;
+        form.pdfContent = pdfDocument;
 
-  try {
-    const pdf = await pdfjs.getDocument({ data: buffer }).promise;
-    form.pdfContent = pdf;
-  } catch (error) {
-    console.error('Error while loading PDF:', error);
-  }
-};
+        // Extraer el texto del PDF
+        const numPages = pdfDocument.numPages;
+        const fullText = [];
+        for (let i = 1; i <= numPages; i++) {
+          const page = await pdfDocument.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((textItem) => textItem.str).join(' ');
+          fullText.push(pageText);
+        }
+        form.fullText = fullText.join(' ');
+      } catch (error) {
+        console.error('Error while loading PDF:', error);
+      }
+    };
 
     fileReader.readAsArrayBuffer(file);
   } else {
-    pdfContent.value = null;
+    form.pdfContent = null;
   }
 };
 
 const handleSubmit = (event) => {
   event.preventDefault();
-  console.log('Language:', form.language);
-  console.log('Offer:', form.offer);
-  console.log('wordlimit:', form.wordlimit);
-  console.log(config.public.token);
-  console.log('PDF Content:', pdfContent.value);
 
-  // Puedes realizar más acciones, como enviar los datos a un servidor
+  if(form.pdfContent == null){
+    alert("Invalid file extension. Please upload a .pdf file.");
+    return;
+  }
+  
+  console.log('Language:', form.value.language);
+  console.log('Offer:', form.value.offer);
+  console.log('wordlimit:', form.value.wordlimit);
+  console.log('Full Text:', form.fullText);
+  
+
 };
 </script>
+
 <style>
 body {
     margin: 0;
