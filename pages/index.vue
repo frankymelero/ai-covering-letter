@@ -1,8 +1,8 @@
 <template>
  <div class="curved-div first">
   <h1 class="mainh1">Covering letter generator</h1>
-  <p>
-    Generate a covering letter from your resume and the desired job offer.
+  <p class="p1">
+    Generate compelling cover letters with the power of AI. Take the hassle out of job applications and trust our Covering Letter Generator to help you land your dream job.
   </p>
   <a href="#getting-started"><input type="button" value="Start Now" class="start"></a>
   <svg viewBox="0 0 1440 319">
@@ -260,6 +260,7 @@ margin-top: 10vh !important;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: #00BBF9;
     margin-top: -10vh;
+    height: 15vh;
 }
 .flexbox{
     width: 100vw;
@@ -335,4 +336,49 @@ input[type=submit]:hover{
   text-align: center;
   padding-left: 2vw;
 }
+.p1{
+  width: 80vw;
+  margin-left: 10vw;
+}
+@media screen and (min-width: 572px) and (max-width: 1100px)  {
+  .curved-div svg {
+    display: block;
+    margin-top: 27vh;
+}
+}
+
+@media screen and (max-width: 571px) {
+  .curved-div svg {
+    display: block;
+    margin-top: 38vh;
+}
+.left-box{
+  width: 100vw;
+  height: 20vh;
+}
+.right-box{
+  width: 100vw;
+  height: 27vh;
+}
+h3{
+  padding-right: 2vw;
+  padding-left: 2vw;
+  font-size: 2rem;
+}
+.curved-div h1 {
+     font-size: 3rem; 
+   
+}
+.curved-div.second svg {
+    display: block;
+    margin-top: 43vh;
+}
+.right-box{
+  width: 100vw;
+    height: 32vh;
+    margin-top: 3vh;
+}
+
+}
+
 </style>
