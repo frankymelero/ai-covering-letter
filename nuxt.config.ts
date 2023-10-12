@@ -2,9 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
-    secret: process.env.CONSTANTE,
+    secret: process.env.TOKEN_CHATGPT,
     public: {
-      token: process.env.CONSTANTE
+      token: process.env.TOKEN_CHATGPT
     }
   }
 })

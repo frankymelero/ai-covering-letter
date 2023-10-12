@@ -37,13 +37,18 @@
 </form>
 <div class="curved-div third" id="results">
   <h1>Results</h1>
-  <p>
+  <p v-html="chatResponse" class="resp">
 
   </p>
   <svg viewBox="0 0 1440 319">
     <path fill="#00BBF9" fill-opacity="1" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
   </svg>
 </div>
+<div class="overlay" v-if="loading">
+    <div class="loading-message">
+      Generating covering letter... It might take up to 120 seconds.
+    </div>
+  </div>
 <section class="footer">
     <p>2023 by Franky Melero</p>
 </section>
@@ -51,10 +56,10 @@
 <script setup>
 import * as pdfjs from 'pdfjs-dist/build/pdf';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min';
-
+const config = useRuntimeConfig();
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const isValid = ref(false);
+const loading = ref(false);
 const form = ref({
   offer: '',
   language: 'english',
@@ -62,6 +67,8 @@ const form = ref({
   pdfContent: null,
   fullText: '', // Agregamos una propiedad para almacenar el texto del PDF
 });
+
+const chatResponse = ref('Please introduce your data in order to see the results.');
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
@@ -94,22 +101,83 @@ const handleFileUpload = async (event) => {
     form.pdfContent = null;
   }
 };
-
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
 
-  if(form.pdfContent == null){
+  if (form.pdfContent == null) {
     alert("Invalid file extension. Please upload a .pdf file.");
     return;
   }
-  
-  console.log('Language:', form.value.language);
-  console.log('Offer:', form.value.offer);
-  console.log('wordlimit:', form.value.wordlimit);
-  console.log('Full Text:', form.fullText);
-  
 
+  loading.value = true; // Muestra el overlay de carga
+
+  try {
+    await sendToChatGpt(form);
+    // Cuando la promesa se resuelva correctamente, oculta el overlay de carga
+    loading.value = false;
+    scrollToResults();
+  } catch (error) {
+    // Maneja errores aquí, por ejemplo, muestra un mensaje de error
+    console.error("Error al generar la respuesta:", error);
+    loading.value = false; // Asegúrate de ocultar el overlay en caso de error
+  }
 };
+
+const sendToChatGpt = async (formContent) => {
+  const cvContent = formContent.fullText;
+  const language = formContent.value.language;
+  const offerContent = formContent.value.offer;
+  const wordLimit = formContent.value.wordlimit;
+  const response = {};
+
+  const systemMessage = [{
+    role: "system",
+    content:  `Genera una covering letter en ${language} de unas ${wordLimit}. Esta es la ofera:${offerContent}. Este es mi CV: ${cvContent}. En el caso que en la oferta se incluya el nombre de la empresa, se ha de incluir en la carta de presentación.`
+  }];
+  
+  return new Promise((resolve, reject) => {
+    fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.public.token}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: systemMessage,
+        max_tokens: 800,
+        temperature: 0.7,
+        n: 1,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.choices && data.choices.length > 0) {
+          document.querySelector(".resp").style.textAlign = "left";
+          const response = data.choices[0].message.content;
+          const formattedResponse = response.replace(/\n/g, '<br>');
+          chatResponse.value = formattedResponse;
+          resolve(); // Resuelve la promesa cuando se completa con éxito
+          
+        } else {
+          console.error("No response data.");
+          reject("No response data"); // Rechaza la promesa en caso de error
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+};
+
+const scrollToResults = () => {
+  const element = document.getElementById('results');
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+    };
+
 </script>
 
 <style>
@@ -244,5 +312,27 @@ input[type=submit]:hover{
     cursor: pointer;
     background-color: rgba(0,0,0,1);
     transition: 0.2s;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo gris semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Asegura que esté por encima de otros elementos */
+}
+
+.loading-message {
+  color: white;
+  font-size: 24px;
+}
+.resp{
+  text-align: center;
+  padding-left: 2vw;
 }
 </style>
