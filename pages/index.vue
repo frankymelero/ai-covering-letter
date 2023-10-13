@@ -55,9 +55,8 @@
   </template>
 <script setup>
 import * as pdfjs from 'pdfjs-dist/build/pdf';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min';
 const config = useRuntimeConfig();
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const loading = ref(false);
 const form = ref({
